@@ -30,7 +30,7 @@ function Get-VersionInfo
 {
     Write-Host "Attempting to retrieve latest version info from $latestVersionUrl"
     $retries = 3
-    $retryCount = 0
+    $retryCount = 1
     $oldEap = $ErrorActionPreference
 
     while ($retryCount -le 3)
