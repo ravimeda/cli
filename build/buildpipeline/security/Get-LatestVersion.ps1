@@ -52,6 +52,7 @@ function Get-VersionInfo
         }
         catch
         {
+            $retryCount++
             Sleep -Seconds (Get-Random -minimum 3 -maximum 10)
             Write-Host "Exception occurred while attempting to get latest version info from $latestVersionUrl. $_"
             Write-Host "Retry $retryCount of $retries"
