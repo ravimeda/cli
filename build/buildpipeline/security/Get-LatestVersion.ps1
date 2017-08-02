@@ -25,14 +25,16 @@ $latestVersionFilePath = ".\latest.version"
 $env:CliLatestCommitSha = ""
 $env:CliLatestPackageId = ""
 
+
 function Get-VersionInfo
 {
+    Write-Host "Attempting to retrieve latest version info from $latestVersionUrl"
     $retries = 3
     $retryCount = 0
+    $oldEap = $ErrorActionPreference
 
     while ($retryCount -le 3)
     {
-        $oldEap = $ErrorActionPreference
         $ErrorActionPreference = "Stop"
 
         try
@@ -52,7 +54,6 @@ function Get-VersionInfo
         }
         catch
         {
-            $retryCount++
             Sleep -Seconds (Get-Random -minimum 3 -maximum 10)
             Write-Host "Exception occurred while attempting to get latest version info from $latestVersionUrl. $_"
             Write-Host "Retry $retryCount of $retries"
@@ -61,6 +62,8 @@ function Get-VersionInfo
         {
             $ErrorActionPreference = $oldEap
         }
+
+        $retryCount++
     }
 }
 
