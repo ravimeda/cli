@@ -318,7 +318,7 @@
       "inputs": {
         "scriptType": "inlineScript",
         "scriptName": "",
-        "arguments": "-sha\"$(CliLatestCommitSha)\" -git \"$(PB_Git)\"\"",
+        "arguments": "-sha\"$(CliLatestCommitSha)\" -git \"$(PB_Git)\"",
         "workingFolder": "$(Build.SourcesDirectory)",
         "inlineScript": "param($sha, $git)\n\nStart-Process \"$git\" -ArgumentList \"clean -df\" -Wait -Verbose -ErrorAction Stop\nStart-Process \"$git\" -ArgumentList \"checkout $sha\" -Wait -Verbose -ErrorAction Stop\nWrite-Host \"Checked out at $sha\"\n",
         "failOnStandardError": "true"
