@@ -2,7 +2,7 @@
 .SYNOPSIS
     Retrieves the latest commit SHA and the corresponding package Id for the specified branch of CLI. 
     This retrieval is achieved by downloading the latest.version file, which contains the commit SHA and package Id info.
-    If retrieval succeeds, then the commit is set as a VSTS Task Variable named $CliCommitSha, and similarly package Id is set as $CliPackageId.
+    If retrieval succeeds, then the commit is set as a VSTS Task Variable named CliLatestCommitSha, and similarly package Id is set as CliLatestPackageId.
 .PARAMETER $Branch
     Name of the CLI branch.
 .PARAMETER $Filename
@@ -55,14 +55,14 @@ $latestVersionContent = Get-VersionInfo
 
 if (-not [string]::IsNullOrWhiteSpace($latestVersionContent) -and $latestVersionContent.Length -eq 2)
 {
-    $CliCommitSha = $latestVersionContent[0]
-    $CliPackageId = $latestVersionContent[1]
+    $CliLatestCommitSha = $latestVersionContent[0]
+    $CliLatestPackageId = $latestVersionContent[1]
 
-    Write-Host "##vso[task.setvariable variable=CliCommitSha;]$CliCommitSha"
-    Write-Host "##vso[task.setvariable variable=CliPackageId;]$CliPackageId"
+    Write-Host "##vso[task.setvariable variable=CliLatestCommitSha;]$CliLatestCommitSha"
+    Write-Host "##vso[task.setvariable variable=CliLatestPackageId;]$CliLatestPackageId"
 
-    Write-Host "The latest commit SHA in CLI $Branch is $CliCommitSha"
-    Write-Host "The latest package Id in CLI $Branch is $CliPackageId"
+    Write-Host "The latest commit SHA in CLI $Branch is $CliLatestCommitSha"
+    Write-Host "The latest package Id in CLI $Branch is $CliLatestPackageId"
 }
 else
 {
