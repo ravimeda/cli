@@ -63,6 +63,10 @@ if (-not [string]::IsNullOrWhiteSpace($latestVersionContent) -and $latestVersion
 
     Write-Host "The latest commit SHA in CLI $Branch is $CliCommitSha"
     Write-Host "The latest package Id in CLI $Branch is $CliPackageId"
+
+    # TODO: Remove before PR.
+    Write-Host "List of all environment variables."
+    gci env: | sort name
 }
 else
 {
