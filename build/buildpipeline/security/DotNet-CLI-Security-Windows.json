@@ -238,6 +238,28 @@
       }
     },
     {
+      "environment": {},
+      "enabled": true,
+      "continueOnError": false,
+      "alwaysRun": false,
+      "displayName": "Get latest version info",
+      "timeoutInMinutes": 0,
+      "condition": "succeeded()",
+      "refName": "PowerShell23",
+      "task": {
+        "id": "e213ff0f-5d5c-4791-802d-52ea3e7be1f1",
+        "versionSpec": "1.*",
+        "definitionType": "task"
+      },
+      "inputs": {
+        "scriptType": "filePath",
+        "scriptName": "$(Build.SourcesDirectory)\\build\\buildpipeline\\security\\Get-LatestVersion.ps1",
+        "arguments": "-Branch \"$(CodeBase)\"",
+        "workingFolder": "$(Build.SourcesDirectory)\\$(PB_Repo)\\build\\buildpipeline\\security\\",
+        "failOnStandardError": "true"
+      }
+    },
+    {
       "enabled": true,
       "continueOnError": true,
       "alwaysRun": false,
@@ -286,8 +308,8 @@
         "softwareFolder": "$(Build.SourcesDirectory)\\security",
         "mpdFolder": "",
         "softwareName": "CLI",
-        "softwareVersionNum": "$(CliLatestPackageId)",
-        "softwareBuildNum": "$(CliLatestPackageId)",
+        "softwareVersionNum": "$(CliPackageId)",
+        "softwareBuildNum": "$(CliPackageId)",
         "modeType": "prerelease",
         "noCopySymbols": "false",
         "noCopyBinaries": "false",
@@ -318,7 +340,7 @@
       "inputs": {
         "scriptType": "inlineScript",
         "scriptName": "",
-        "arguments": "-sha \"$(CliLatestCommitSha)\" -git \"$(PB_Git)\"",
+        "arguments": "-sha \"$(CliCommitSha)\" -git \"$(PB_Git)\"",
         "workingFolder": "$(Build.SourcesDirectory)",
         "inlineScript": "param($sha, $git)\n\nStart-Process \"$git\" -ArgumentList \"clean -df\" -Wait -Verbose -ErrorAction Stop\nStart-Process \"$git\" -ArgumentList \"checkout $sha\" -Wait -Verbose -ErrorAction Stop\nWrite-Host \"Checked out at $sha\"\n",
         "failOnStandardError": "true"
@@ -678,7 +700,7 @@
     "type": "TfsGit",
     "name": "DotNet-Cli-Trusted",
     "url": "https://devdiv.visualstudio.com/DevDiv/_git/DotNet-Cli-Trusted",
-    "defaultBranch": "refs/heads/master",
+    "defaultBranch": "refs/heads/sec_ext",
     "clean": "true",
     "checkoutSubmodules": false
   },

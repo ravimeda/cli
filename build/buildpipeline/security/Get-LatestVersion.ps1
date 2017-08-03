@@ -2,7 +2,7 @@
 .SYNOPSIS
     Retrieves the latest commit SHA and the corresponding package Id for the specified branch of CLI. 
     This retrieval is achieved by downloading the latest.version file, which contains the commit SHA and package Id info.
-    If retrieval succeeds, then the commit is set as $env:CliLatestCommitSha, and package Id is set as $env:CliLatestPackageId.
+    If retrieval succeeds, then the commit is set as a VSTS Task Variable named $CliCommitSha, and similarly package Id is set as $CliPackageId.
 .PARAMETER $Branch
     Name of the CLI branch.
 .PARAMETER $Filename
@@ -20,12 +20,6 @@ param(
     [string]$UrlPrefix="https://dotnetcli.blob.core.windows.net/dotnet/Sdk"
 )
 
-$latestVersionUrl = "$UrlPrefix/$Branch/$Filename"
-$latestVersionFilePath = ".\latest.version"
-$env:CliLatestCommitSha = ""
-$env:CliLatestPackageId = ""
-
-
 function Get-VersionInfo
 {
     Write-Host "Attempting to retrieve latest version info from $latestVersionUrl"
@@ -39,18 +33,7 @@ function Get-VersionInfo
 
         try
         {
-            if(Test-Path "$latestVersionFilePath")
-            {
-                Remove-Item "$latestVersionFilePath" -Force
-            }
-
-            Invoke-WebRequest -Uri "$latestVersionUrl" -OutFile "$latestVersionFilePath"
-
-            $latestVersionContent = Get-Content "$latestVersionFilePath"
-            $env:CliLatestCommitSha = $latestVersionContent[0]
-            $env:CliLatestPackageId = $latestVersionContent[1]
-
-            break
+            return (Invoke-WebRequest -Uri "$latestVersionUrl").Content.Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
         }
         catch
         {
@@ -67,15 +50,19 @@ function Get-VersionInfo
     }
 }
 
-Get-VersionInfo
+$latestVersionUrl = "$UrlPrefix/$Branch/$Filename"
+$latestVersionContent = Get-VersionInfo
 
-if (-not [string]::IsNullOrWhiteSpace($env:CliLatestCommitSha) -and -not [string]::IsNullOrWhiteSpace($env:CliLatestPackageId))
+if (-not [string]::IsNullOrWhiteSpace($latestVersionContent) -and $latestVersionContent.Length -eq 2)
 {
-    Write-Host "##vso[task.setvariable variable=CliLatestCommitSha;]$env:CliLatestCommitSha"
-    Write-Host "##vso[task.setvariable variable=CliLatestPackageId;]$env:CliLatestPackageId"
+    $CliCommitSha = $latestVersionContent[0]
+    $CliPackageId = $latestVersionContent[1]
 
-    Write-Host "The latest commit SHA in CLI $Branch is $env:CliLatestCommitSha"
-    Write-Host "The latest package Id in CLI $Branch is $env:CliLatestPackageId"
+    Write-Host "##vso[task.setvariable variable=$CliCommitSha;]$CliCommitSha"
+    Write-Host "##vso[task.setvariable variable=$CliPackageId;]$CliPackageId"
+
+    Write-Host "The latest commit SHA in CLI $Branch is $CliCommitSha"
+    Write-Host "The latest package Id in CLI $Branch is $CliPackageId"
 }
 else
 {
