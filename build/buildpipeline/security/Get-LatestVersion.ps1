@@ -27,13 +27,14 @@ function Get-VersionInfo
     $retryCount = 1
     $oldEap = $ErrorActionPreference
 
-    while ($retryCount -le 3)
+    while ($retryCount -le $retries)
     {
         $ErrorActionPreference = "Stop"
 
         try
         {
-            return (Invoke-WebRequest -Uri "$latestVersionUrl" -UseBasicParsing).Content.Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
+            $content = (Invoke-WebRequest -Uri "$latestVersionUrl" -UseBasicParsing).Content
+            return $content.Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
         }
         catch
         {
