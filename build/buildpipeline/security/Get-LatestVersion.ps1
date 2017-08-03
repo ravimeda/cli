@@ -33,7 +33,7 @@ function Get-VersionInfo
 
         try
         {
-            return (Invoke-WebRequest -Uri "$latestVersionUrl").Content.Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
+            return (Invoke-WebRequest -Uri "$latestVersionUrl" -UseBasicParsing).Content.Split([Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
         }
         catch
         {
