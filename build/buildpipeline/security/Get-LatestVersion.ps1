@@ -54,7 +54,7 @@ function Get-VersionInfo
 $latestVersionUrl = "$UrlPrefix/$Branch/$Filename"
 $latestVersionContent = Get-VersionInfo
 
-if (-not [string]::IsNullOrWhiteSpace($latestVersionContent) -and $latestVersionContent.Length -eq 2)
+if ($latestVersionContent -ne $null -and $latestVersionContent.Length -eq 2)
 {
     $CliLatestCommitSha = $latestVersionContent[0]
     $CliLatestPackageId = $latestVersionContent[1]
